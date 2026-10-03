@@ -3,12 +3,13 @@ import { search } from '../algorithms/search'
 import { ALGOS, INFO, LINE, PSEUDO } from '../content'
 import { applyEvent, freshState } from '../engine/reducer'
 import { explain } from '../engine/explain'
-import { usePlayback } from '../engine/usePlayback'
+import { usePlayback } from '../../../lib/usePlayback'
 import { createProblem, idOf, label } from '../grid'
 import { generateMaze } from '../maze'
 import { decode, encode } from '../share'
 import type { Experiment } from '../share'
 import type { AlgoId, Problem } from '../types'
+import { PlaybackBar } from '../../../components/PlaybackBar'
 import { ComparePanel } from './ComparePanel'
 import { Grid } from './Grid'
 import type { DragMode } from './Grid'
@@ -142,7 +143,6 @@ export function Workspace() {
   return (
     <>
       <header>
-        <b>AlgoStudio</b>
         <span className="muted">Algorithms / Pathfinding / {ALGOS.find((a) => a.id === algo)!.name}</span>
         <span className="status mono">{status}</span>
       </header>
@@ -229,22 +229,7 @@ export function Workspace() {
         </div>
       </main>
 
-      <div className="bar">
-        <button aria-label="Restart" disabled={pb.pos === 0} onClick={() => pb.seek(0)}>⏮</button>
-        <button aria-label="Previous step" disabled={pb.pos === 0} onClick={() => pb.seek(pb.pos - 1)}>◀</button>
-        <button onClick={pb.toggle}>{pb.playing ? '⏸ Pause' : '▶ Play'}</button>
-        <button aria-label="Next step" disabled={pb.pos >= pb.total} onClick={() => pb.seek(pb.pos + 1)}>▶|</button>
-        <input type="range" min={0} max={pb.total} value={pb.pos} aria-label="Timeline" onChange={(ev) => pb.seek(Number(ev.target.value))} />
-        <span className="mono">Step {pb.pos} / {pb.total}</span>
-        <label>
-          Speed{' '}
-          <select value={pb.speed} onChange={(ev) => pb.setSpeed(Number(ev.target.value))}>
-            {[1, 2, 4, 8, 16].map((s) => (
-              <option key={s} value={s}>{s}x</option>
-            ))}
-          </select>
-        </label>
-      </div>
+      <PlaybackBar pb={pb} />
       <div className="sr" aria-live="polite">
         {viz.done ? (viz.found ? `Algorithm completed. Path found. Cost ${viz.cost}.` : 'Algorithm completed. No path.') : ''}
       </div>

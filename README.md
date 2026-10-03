@@ -20,6 +20,8 @@ npm run build     # type-check + production build into dist/
 - Compare all four algorithms on the same grid
 - Share links (`#x=...`) and local autosave. Only the configuration is stored, never animation frames
 
+- Sorting laboratory: Bubble, Selection, Insertion, Merge and Quick sort on the same playback engine, with presets, custom-array validation and a comparison table
+
 ## Architecture
 
 ```
@@ -30,6 +32,8 @@ Problem (grid) -> search() -> PathEvent[] -> usePlayback -> applyEvent -> VizSta
 - `features/pathfinding/algorithms`: pure BFS, DFS, Dijkstra, A* and the `MinHeap` priority queue. No UI imports.
 - `features/pathfinding/engine`: event reducer, playback hook, explanation generator.
 - `features/pathfinding/components`: grid and workspace. Rendering only.
+- `features/sorting`: same layering for sorting (`algorithms`, `engine`, `components`).
+- `lib/usePlayback.ts` and `components/PlaybackBar.tsx`: shared by every laboratory.
 
 ## Deploy (GitHub Pages)
 
