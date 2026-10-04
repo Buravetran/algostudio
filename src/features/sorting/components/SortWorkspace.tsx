@@ -107,7 +107,7 @@ export function SortWorkspace() {
         <div className="col">
           <section className="panel">
             <h2>What is happening</h2>
-            <div>{explainSort(e, viz)}</div>
+            <div className="explain">{explainSort(e, viz)}</div>
           </section>
           <section className="panel mono small">
             <h2>About</h2>
@@ -134,7 +134,7 @@ export function SortWorkspace() {
           </section>
           <section className="panel">
             <h2>Current event</h2>
-            <pre className="mono small">{e ? JSON.stringify(e) : '(no event yet)'}</pre>
+            <pre className="mono small event">{e ? JSON.stringify(e) : '(no event yet)'}</pre>
           </section>
         </div>
       </main>

@@ -197,7 +197,7 @@ export function Workspace() {
         <div className="col">
           <section className="panel">
             <h2>What is happening</h2>
-            <div aria-live={predict ? 'polite' : 'off'}>{predict && verdict ? verdict : explain(e, algo, problem)}</div>
+            <div className="explain" aria-live={predict ? 'polite' : 'off'}>{predict && verdict ? verdict : explain(e, algo, problem)}</div>
           </section>
           <section className="panel mono small">
             <h2>About</h2>
@@ -224,7 +224,7 @@ export function Workspace() {
           </section>
           <section className="panel">
             <h2>Current event</h2>
-            <pre className="mono small">{e ? JSON.stringify(e.type === 'PATH' ? { ...e, path: `[${e.path.length} nodes]` } : e) : '(no event yet)'}</pre>
+            <pre className="mono small event">{e ? JSON.stringify(e.type === 'PATH' ? { ...e, path: `[${e.path.length} nodes]` } : e) : '(no event yet)'}</pre>
           </section>
         </div>
       </main>

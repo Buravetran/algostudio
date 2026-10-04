@@ -72,3 +72,11 @@ th:first-child, td:first-child { text-align: left; }
 .bar.pivot::before { content: "▼"; color: var(--target); }
 input.text { background: var(--panel); color: inherit; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font: inherit; width: 100%; }
 .note.error { color: var(--target); min-height: 1em; }
+
+/* Stop layout jitter during playback: keep sizes stable while text changes. */
+html { overflow-y: scroll; scrollbar-gutter: stable; overflow-anchor: none; }
+.lab { align-items: start; }
+.explain { height: 11em; overflow-y: auto; }
+pre.event { height: 7em; overflow: auto; }
+.status { min-width: 10ch; text-align: center; }
+.playback .mono { display: inline-block; min-width: 14ch; }
