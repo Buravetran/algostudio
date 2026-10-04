@@ -7,17 +7,43 @@ import type { Question } from '../challenge'
 import type { Preset } from '../arrays'
 import { sortEvents } from '../algorithms/sort'
 import { SORT_ALGOS, SORT_INFO, SORT_PSEUDO, sortLine } from '../content'
+import { clearHash } from '../../../lib/hash'
+import { decodeSort, encodeSort } from '../share'
 import { explainSort } from '../engine/explain'
 import { applySortEvent, freshSortState } from '../engine/reducer'
 import type { SortAlgoId } from '../types'
 import { Bars } from './Bars'
 import { SortComparePanel } from './SortComparePanel'
 
+const STORE = 'algostudio:sorting:v1'
+
+/** Shared link wins, then the last local session, then a fresh random array. */
+function loadInitial(): { algo: SortAlgoId; arr: number[]; notice: string } {
+  const fallback = { algo: 'merge' as SortAlgoId, arr: makeArray('Random', 20, Math.random), notice: '' }
+  try {
+    const m = location.hash.match(/^#s=(.+)$/)
+    if (m) {
+      const exp = decodeSort(decodeURIComponent(m[1]))
+      return exp
+        ? { ...exp, notice: 'Loaded the shared experiment.' }
+        : { ...fallback, notice: 'That shared link could not be loaded because its data is invalid. Showing a new random array.' }
+    }
+    const saved = localStorage.getItem(STORE)
+    const exp = saved ? decodeSort(saved) : null
+    if (exp) return { ...exp, notice: '' }
+  } catch {
+    /* storage unavailable: fall through */
+  }
+  return fallback
+}
+
 export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
-  const [algo, setAlgo] = useState<SortAlgoId>(initialAlgo ?? 'merge')
+  const [init] = useState(loadInitial)
+  const [algo, setAlgo] = useState<SortAlgoId>(initialAlgo ?? init.algo)
   const [preset, setPreset] = useState<Preset>('Random')
-  const [size, setSize] = useState(20)
-  const [arr, setArr] = useState(() => makeArray('Random', 20, Math.random))
+  const [size, setSize] = useState(init.arr.length)
+  const [arr, setArr] = useState(init.arr)
+  const [notice, setNotice] = useState(init.notice)
   const [text, setText] = useState('')
   const [error, setError] = useState('')
   const [challenge, setChallenge] = useState(false)
@@ -33,6 +59,26 @@ export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
   const line = sortLine(algo, e)
   const info = SORT_INFO[algo]
   const name = SORT_ALGOS.find((a) => a.id === algo)!.name
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORE, encodeSort({ algo, arr }))
+    } catch {
+      /* ignore */
+    }
+    clearHash()
+  }, [algo, arr])
+
+  const share = async () => {
+    const url = `${location.origin}${location.pathname}#s=${encodeURIComponent(encodeSort({ algo, arr }))}`
+    history.replaceState(null, '', url)
+    try {
+      await navigator.clipboard.writeText(url)
+      setNotice('Share link copied. Anyone who opens it sees this array and algorithm.')
+    } catch {
+      setNotice('Could not copy automatically. The link is now in the address bar, so copy it from there.')
+    }
+  }
 
   const ask = (pos: number) => {
     setQuestion(makeQuestion(events, pos, arr.length, Math.random))
@@ -115,8 +161,10 @@ export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
               <button onClick={() => regen(preset, size)}>New array</button>
               <input type="text" className="text" value={text} placeholder="8, 3, 5, 1, 9, 2" aria-label="Custom array" onChange={(ev) => setText(ev.target.value)} />
               <button onClick={applyCustom}>Use custom array</button>
+              <button onClick={share}>Copy share link</button>
             </div>
             <p className="note error" role="alert">{error}</p>
+            <p className="note" role="status">{notice || 'Your last array is saved in this browser.'}</p>
           </section>
           <section className="panel quiz">
             <h2>Challenge</h2>

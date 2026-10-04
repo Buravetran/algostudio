@@ -5,6 +5,7 @@ import { applyEvent, freshState } from '../engine/reducer'
 import { explain } from '../engine/explain'
 import { usePlayback } from '../../../lib/usePlayback'
 import { createProblem, idOf, label } from '../grid'
+import { clearHash } from '../../../lib/hash'
 import { generateMaze } from '../maze'
 import { decode, encode } from '../share'
 import type { Experiment } from '../share'
@@ -67,6 +68,7 @@ export function Workspace({ initialAlgo }: { initialAlgo?: AlgoId }) {
     } catch {
       /* ignore */
     }
+    clearHash()
   }, [algo, problem])
 
   useEffect(() => setVerdict(''), [events])

@@ -14,7 +14,7 @@ const TABS: { id: Tab; name: string }[] = [
 ]
 
 export function App() {
-  const [tab, setTab] = useState<Tab>('pathfinding')
+  const [tab, setTab] = useState<Tab>(() => (location.hash.startsWith('#s=') ? 'sorting' : 'pathfinding'))
   const [pathAlgo, setPathAlgo] = useState<AlgoId | undefined>()
   const [sortAlgo, setSortAlgo] = useState<SortAlgoId | undefined>()
 

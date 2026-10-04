@@ -18,7 +18,7 @@ npm run build     # type-check + production build into dist/
 - Weighted terrain, random walls, seeded maze generator (always solvable)
 - Predict mode: guess which node is taken next; graded from the event list
 - Compare all four algorithms on the same grid
-- Share links (`#x=...`) and local autosave. Only the configuration is stored, never animation frames
+- Share links (`#x=...` for pathfinding, `#s=...` for sorting) and local autosave in both labs. Only the configuration is stored, never animation frames
 
 - Sorting laboratory: Bubble, Selection, Insertion, Merge and Quick sort on the same playback engine, with presets, custom-array validation and a comparison table
 - Learn pages for all nine algorithms: intuition, steps, pseudocode, complexity, common mistakes, self-test questions, and a button that opens the laboratory with that algorithm selected
