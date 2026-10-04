@@ -11,8 +11,8 @@ import type { SortAlgoId } from '../types'
 import { Bars } from './Bars'
 import { SortComparePanel } from './SortComparePanel'
 
-export function SortWorkspace() {
-  const [algo, setAlgo] = useState<SortAlgoId>('merge')
+export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
+  const [algo, setAlgo] = useState<SortAlgoId>(initialAlgo ?? 'merge')
   const [preset, setPreset] = useState<Preset>('Random')
   const [size, setSize] = useState(20)
   const [arr, setArr] = useState(() => makeArray('Random', 20, Math.random))

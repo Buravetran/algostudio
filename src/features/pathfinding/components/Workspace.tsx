@@ -44,10 +44,10 @@ function loadInitial(): { exp: Experiment; notice: string } {
   return { exp: fallback, notice: '' }
 }
 
-export function Workspace() {
+export function Workspace({ initialAlgo }: { initialAlgo?: AlgoId }) {
   const [init] = useState(loadInitial)
   const [problem, setProblem] = useState(init.exp.problem)
-  const [algo, setAlgo] = useState<AlgoId>(init.exp.algo)
+  const [algo, setAlgo] = useState<AlgoId>(initialAlgo ?? init.exp.algo)
   const [tool, setTool] = useState<Tool>('wall')
   const [notice, setNotice] = useState(init.notice)
   const [predict, setPredict] = useState(false)

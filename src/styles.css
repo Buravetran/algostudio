@@ -80,3 +80,21 @@ html { overflow-y: scroll; scrollbar-gutter: stable; overflow-anchor: none; }
 pre.event { height: 7em; overflow: auto; }
 .status { min-width: 10ch; text-align: center; }
 .playback .mono { display: inline-block; min-width: 14ch; }
+
+/* Learn pages */
+.learn { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 12px; padding: 12px; align-items: start; }
+.lessons h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--mu); margin: 8px 0 6px; }
+.lessons h2:first-child { margin-top: 0; }
+.lessons button { text-align: left; }
+.lessons button[aria-current="page"] { background: var(--line); border-color: var(--mu); }
+.lesson { max-width: 760px; }
+.lesson h1 { font-size: 22px; margin: 0 0 4px; }
+.lesson h2 { font-size: 14px; margin: 20px 0 6px; }
+.lesson .lead { font-size: 16px; color: var(--mu); margin: 0 0 12px; }
+.lesson ol, .lesson ul { margin: 0; padding-left: 20px; }
+.lesson li { margin: 3px 0; }
+.lesson details { border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; margin: 6px 0; }
+.lesson summary { cursor: pointer; }
+.lesson details p { margin: 8px 0 0; color: var(--mu); }
+button.primary { background: var(--front); color: #fff; border-color: var(--front); font-weight: 600; }
+@media (max-width: 900px) { .learn { grid-template-columns: 1fr; } }

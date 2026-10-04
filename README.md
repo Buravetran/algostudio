@@ -21,6 +21,7 @@ npm run build     # type-check + production build into dist/
 - Share links (`#x=...`) and local autosave. Only the configuration is stored, never animation frames
 
 - Sorting laboratory: Bubble, Selection, Insertion, Merge and Quick sort on the same playback engine, with presets, custom-array validation and a comparison table
+- Learn pages for all nine algorithms: intuition, steps, pseudocode, complexity, common mistakes, self-test questions, and a button that opens the laboratory with that algorithm selected
 
 ## Architecture
 
