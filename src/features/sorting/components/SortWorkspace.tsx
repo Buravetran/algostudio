@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { PlaybackBar } from '../../../components/PlaybackBar'
 import { usePlayback } from '../../../lib/usePlayback'
 import { PRESETS, makeArray, parseArray } from '../arrays'
+import { makeQuestion } from '../challenge'
+import type { Question } from '../challenge'
 import type { Preset } from '../arrays'
 import { sortEvents } from '../algorithms/sort'
 import { SORT_ALGOS, SORT_INFO, SORT_PSEUDO, sortLine } from '../content'
@@ -18,6 +20,11 @@ export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
   const [arr, setArr] = useState(() => makeArray('Random', 20, Math.random))
   const [text, setText] = useState('')
   const [error, setError] = useState('')
+  const [challenge, setChallenge] = useState(false)
+  const [question, setQuestion] = useState<Question | null>(null)
+  const [picked, setPicked] = useState<number | null>(null)
+  const [feedback, setFeedback] = useState('')
+  const [score, setScore] = useState({ right: 0, total: 0 })
 
   const events = useMemo(() => sortEvents(algo, arr), [algo, arr])
   const pb = usePlayback(events, () => freshSortState(arr), applySortEvent)
@@ -26,6 +33,29 @@ export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
   const line = sortLine(algo, e)
   const info = SORT_INFO[algo]
   const name = SORT_ALGOS.find((a) => a.id === algo)!.name
+
+  const ask = (pos: number) => {
+    setQuestion(makeQuestion(events, pos, arr.length, Math.random))
+    setPicked(null)
+    setFeedback('')
+  }
+  useEffect(() => {
+    if (challenge) ask(0)
+    else setQuestion(null)
+  }, [events, challenge])
+
+  // The answer is already in the event list: replay up to that event to explain it.
+  const answer = (k: number) => {
+    if (!question || picked !== null) return
+    const after = freshSortState(arr)
+    for (let i = 0; i <= question.eventIndex; i++) applySortEvent(after, events[i])
+    const ok = k === question.correct
+    setPicked(k)
+    setScore((sc) => ({ right: sc.right + (ok ? 1 : 0), total: sc.total + 1 }))
+    setFeedback((ok ? 'Correct. ' : `Not quite. The answer was ${question.options[question.correct]}. `) + explainSort(events[question.eventIndex], after))
+    pb.seek(question.eventIndex + 1)
+  }
+  const stale = question !== null && picked === null && pb.pos > question.eventIndex
 
   const regen = (p: Preset, n: number) => {
     setArr(makeArray(p, n, Math.random))
@@ -87,6 +117,32 @@ export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
               <button onClick={applyCustom}>Use custom array</button>
             </div>
             <p className="note error" role="alert">{error}</p>
+          </section>
+          <section className="panel quiz">
+            <h2>Challenge</h2>
+            <button aria-pressed={challenge} onClick={() => setChallenge((c) => !c)}>
+              {challenge ? 'Challenge mode: on' : 'Challenge mode: off'}
+            </button>
+            {challenge && (
+              <>
+                <p className="note">Score: {score.right} / {score.total}</p>
+                {question ? (
+                  <>
+                    <p><b>{question.prompt}</b></p>
+                    <div className="stack" role="group" aria-label="Answers">
+                      {question.options.map((o, k) => (
+                        <button key={k} disabled={picked !== null} onClick={() => answer(k)}>{o}</button>
+                      ))}
+                    </div>
+                    {stale && <p className="note">You stepped past this question. Press New question.</p>}
+                    {feedback && <p className="note" role="status">{feedback}</p>}
+                    {(picked !== null || stale) && <button onClick={() => ask(pb.pos)}>New question</button>}
+                  </>
+                ) : (
+                  <p className="note">No more questions here. Press Restart on the playback bar or change the array.</p>
+                )}
+              </>
+            )}
           </section>
         </div>
 

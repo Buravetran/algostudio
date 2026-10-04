@@ -98,3 +98,5 @@ pre.event { height: 7em; overflow: auto; }
 .lesson details p { margin: 8px 0 0; color: var(--mu); }
 button.primary { background: var(--front); color: #fff; border-color: var(--front); font-weight: 600; }
 @media (max-width: 900px) { .learn { grid-template-columns: 1fr; } }
+.quiz .stack { margin: 6px 0; }
+.quiz p { margin: 6px 0; }

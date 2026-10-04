@@ -22,6 +22,7 @@ npm run build     # type-check + production build into dist/
 
 - Sorting laboratory: Bubble, Selection, Insertion, Merge and Quick sort on the same playback engine, with presets, custom-array validation and a comparison table
 - Learn pages for all nine algorithms: intuition, steps, pseudocode, complexity, common mistakes, self-test questions, and a button that opens the laboratory with that algorithm selected
+- Challenge mode for sorting: questions about the next comparison, swap, write or pivot, graded from the event list
 
 ## Architecture
 
