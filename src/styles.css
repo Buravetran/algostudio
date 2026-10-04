@@ -100,3 +100,4 @@ button.primary { background: var(--front); color: #fff; border-color: var(--fron
 @media (max-width: 900px) { .learn { grid-template-columns: 1fr; } }
 .quiz .stack { margin: 6px 0; }
 .quiz p { margin: 6px 0; }
+.lessons > div + div { margin-top: 16px; }

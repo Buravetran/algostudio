@@ -2,6 +2,8 @@
   "name": "algostudio",
   "private": true,
   "version": "0.1.0",
+  "description": "Interactive algorithm laboratory: step through pathfinding and sorting algorithms driven by a deterministic event engine.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
