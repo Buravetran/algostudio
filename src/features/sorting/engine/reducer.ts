@@ -55,3 +55,12 @@ export function applySortEvent(s: SortViz, e: SortEvent): void {
       break
   }
 }
+
+/** Copy of the state, used for rewind snapshots. */
+export const cloneSortViz = (s: SortViz): SortViz => ({
+  ...s,
+  values: [...s.values],
+  compared: [...s.compared],
+  changed: [...s.changed],
+  sorted: s.sorted.slice(),
+})

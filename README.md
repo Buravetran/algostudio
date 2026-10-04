@@ -131,6 +131,7 @@ without the UI:
 - **Priority queue:** empty queue, ordering, equal priorities (first in, first out), interleaved push and pop, and 500 pseudo-random values compared with a sorted copy
 - **Pathfinding:** returned paths start at the start and end at the target, every step is between neighbours, the reported cost equals the sum of terrain costs, unreachable targets return no path, BFS finds the fewest steps, Dijkstra and A* avoid costly terrain, and A* matches Dijkstra's cost on 200 seeded random grids
 - **Sorting:** for every algorithm, replaying the events on a copy of the input gives a sorted permutation of it (empty, single, duplicate, reversed and random arrays), each position is marked final exactly once, the input is not modified, and exact comparison and swap counts match known values
+- **Rewind:** seeking forward and backward in any order gives exactly the same state as replaying from the start, for pathfinding and for all five sorting algorithms, and a rewind of one step replays at most 49 events
 - **Maze generator:** start and target are always connected, and the same seed gives the same maze
 - **Share links, array input and challenge questions:** round trips, and rejection of malformed input
 - **Lessons:** every algorithm has exactly one complete lesson
@@ -141,7 +142,7 @@ build on every push.
 ## Performance notes
 
 - Algorithms run once per configuration, not once per animation frame. Playback only moves a position through the event list
-- Stepping forward applies one event. Stepping back replays from the start, which is fast at these sizes; periodic snapshots are the planned upgrade for long runs
+- Stepping forward applies one event. While playing forward, the playback layer stores a snapshot of the visualization state every 50 events. Stepping back restores the nearest earlier snapshot and replays at most 49 events, instead of replaying from the start
 - Side panels have fixed heights so changing explanation text cannot resize the page during playback
 - Browser run time is shown for reference only and is labeled as machine-dependent. The comparison tables rank algorithms by counted operations, not by milliseconds
 
@@ -168,11 +169,9 @@ repository subpath.
 - Insertion sort is drawn as repeated adjacent swaps, not as shifts
 - Bubble sort has no early exit, so it always does n(n - 1) / 2 comparisons
 - Only 4-direction movement and the Manhattan heuristic are supported
-- Stepping backward replays from the start
 
 ## Future improvements
 
-- Snapshot-based rewind for long runs
 - More heuristics and movement models (Chebyshev, Euclidean, diagonal moves) tied to their admissibility
 - Greedy best-first, bidirectional search, Bellman-Ford
 - Graph editor and graph traversal on arbitrary graphs

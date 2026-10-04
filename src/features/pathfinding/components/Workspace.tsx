@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { search } from '../algorithms/search'
 import { ALGOS, INFO, LINE, PSEUDO } from '../content'
-import { applyEvent, freshState } from '../engine/reducer'
+import { applyEvent, cloneViz, freshState } from '../engine/reducer'
 import { explain } from '../engine/explain'
 import { usePlayback } from '../../../lib/usePlayback'
 import { createProblem, idOf, label } from '../grid'
@@ -57,7 +57,7 @@ export function Workspace({ initialAlgo }: { initialAlgo?: AlgoId }) {
 
   const events = useMemo(() => search(algo, problem), [algo, problem])
   const size = problem.rows * problem.cols
-  const pb = usePlayback(events, () => freshState(size), applyEvent)
+  const pb = usePlayback(events, () => freshState(size), applyEvent, cloneViz)
   const e = pb.pos > 0 ? events[pb.pos - 1] : undefined
   const viz = pb.state
   const line = e ? LINE[e.type] : 0

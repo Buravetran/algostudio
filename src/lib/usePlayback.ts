@@ -1,26 +1,19 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Replayer } from './replayer'
 
 /**
  * Generic playback over an event list. Time is controlled here only:
- * algorithms never see speed. Stepping back replays from the start;
- * add periodic snapshots here when event lists get long.
+ * algorithms never see speed. Rewinding uses periodic snapshots (see Replayer).
  */
-export function usePlayback<E, S>(events: E[], fresh: () => S, apply: (s: S, e: E) => void) {
+export function usePlayback<E, S>(events: E[], fresh: () => S, apply: (s: S, e: E) => void, clone?: (s: S) => S) {
   const [raw, setRaw] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(4)
-  const freshRef = useRef(fresh)
-  freshRef.current = fresh
-  const cache = useRef<{ events: E[]; pos: number; state: S } | null>(null)
   const pos = Math.min(raw, events.length)
 
-  const state = useMemo(() => {
-    let c = cache.current
-    if (!c || c.events !== events || pos < c.pos) c = { events, pos: 0, state: freshRef.current() }
-    while (c.pos < pos) apply(c.state, events[c.pos++])
-    cache.current = c
-    return c.state
-  }, [events, pos, apply])
+  // A new Replayer per event list. `fresh` is read when the events change, which is when its inputs change too.
+  const replayer = useMemo(() => new Replayer(events, fresh, apply, clone), [events, apply, clone]) // eslint-disable-line react-hooks/exhaustive-deps
+  const state = useMemo(() => replayer.seek(pos), [replayer, pos])
 
   useEffect(() => {
     setRaw(0)

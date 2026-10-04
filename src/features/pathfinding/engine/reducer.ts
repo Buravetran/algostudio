@@ -53,3 +53,11 @@ export function applyEvent(s: VizState, e: PathEvent): void {
       break
   }
 }
+
+/** Copy of the state, used for rewind snapshots. */
+export const cloneViz = (s: VizState): VizState => ({
+  ...s,
+  discovered: s.discovered.slice(),
+  visited: s.visited.slice(),
+  path: [...s.path],
+})

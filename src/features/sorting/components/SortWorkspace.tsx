@@ -10,7 +10,7 @@ import { SORT_ALGOS, SORT_INFO, SORT_PSEUDO, sortLine } from '../content'
 import { clearHash } from '../../../lib/hash'
 import { decodeSort, encodeSort } from '../share'
 import { explainSort } from '../engine/explain'
-import { applySortEvent, freshSortState } from '../engine/reducer'
+import { applySortEvent, cloneSortViz, freshSortState } from '../engine/reducer'
 import type { SortAlgoId } from '../types'
 import { Bars } from './Bars'
 import { SortComparePanel } from './SortComparePanel'
@@ -53,7 +53,7 @@ export function SortWorkspace({ initialAlgo }: { initialAlgo?: SortAlgoId }) {
   const [score, setScore] = useState({ right: 0, total: 0 })
 
   const events = useMemo(() => sortEvents(algo, arr), [algo, arr])
-  const pb = usePlayback(events, () => freshSortState(arr), applySortEvent)
+  const pb = usePlayback(events, () => freshSortState(arr), applySortEvent, cloneSortViz)
   const viz = pb.state
   const e = pb.pos > 0 ? events[pb.pos - 1] : undefined
   const line = sortLine(algo, e)

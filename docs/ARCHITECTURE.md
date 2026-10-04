@@ -74,6 +74,11 @@ algorithm. Opening it replays the run, which keeps links short and reproducible.
 **Browser run time is not a benchmark.** It depends on the device, browser and load. The comparison tables
 use counted operations and show run time only as a labeled, single-run reference.
 
+**Rewind uses snapshots.** Going back by replaying every event from the start costs more the longer a run
+is. `Replayer` stores a copy of the visualization state every 50 events while playing forward. Going back
+restores the nearest earlier copy and replays the few events after it. Snapshots are copied on restore so
+they are never mutated, and tests check that any order of seeks gives the same state as a full replay.
+
 **State is split by ownership.** Experiment configuration (grid or array, algorithm), execution state
 (events, position, speed) and view state (tool, challenge mode) live in different places rather than in one
 global object.
@@ -90,5 +95,5 @@ when the event types already cover the new algorithm.
 
 ## Known limitations
 
-See the README. The main ones are that stepping backward replays from the start (snapshots are planned)
-and that two sorting visualizations (merge highlights and insertion moves) are simplified.
+See the README. The main one is that two sorting visualizations (merge highlights and insertion moves)
+are simplified.
